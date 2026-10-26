@@ -1,104 +1,120 @@
 #include <iostream>
 using namespace std;
 
-
 template <typename T>
-class Nodo {
-public:
+class Nodo
+{
+private:
     T dato;
     Nodo<T>* siguiente;
     Nodo<T>* anterior;
 
-    Nodo(T valor) {
-        dato = valor;
+public:
+    Nodo(T dato)
+    {
+        this->dato = dato;
         siguiente = nullptr;
         anterior = nullptr;
     }
+
+    T getDato()
+    {
+        return dato;
+    }
+
+    void setDato(T dato)
+    {
+        this->dato = dato;
+    }
+
+    Nodo<T>* getSiguiente()
+    {
+        return siguiente;
+    }
+
+    void setSiguiente(Nodo<T>* siguiente)
+    {
+        this->siguiente = siguiente;
+    }
+
+    Nodo<T>* getAnterior()
+    {
+        return anterior;
+    }
+
+    void setAnterior(Nodo<T>* anterior)
+    {
+        this->anterior = anterior;
+    }
 };
 
-
-template <typename T>
-class ListaDobleCircular {
+class ListaDobleCircular
+{
 private:
-    Nodo<T>* cabeza;
-    int tamanio;
+    Nodo<int>* cabeza;
 
 public:
-    ListaDobleCircular() {
+
+    ListaDobleCircular()
+    {
         cabeza = nullptr;
-        tamanio = 0;
     }
 
-   
+    void insertar(int dato)
+    {
+        Nodo<int>* nuevo = new Nodo<int>(dato);
 
-    bool estaVacia() {
-        return cabeza == nullptr;
-    }
-
-    int getTamanio() {
-        return tamanio;
-    }
-
-    
-    void insertarAlFinal(T valor) {
-        Nodo<T>* nuevo = new Nodo<T>(valor);
-
-        if (estaVacia()) {
-        
-            nuevo->siguiente = nuevo;
-            nuevo->anterior = nuevo;
+        if (cabeza == nullptr)
+        {
             cabeza = nuevo;
-        } else {
-            Nodo<T>* ultimo = cabeza->anterior;
 
-            nuevo->siguiente = cabeza;
-            nuevo->anterior = ultimo;
-            ultimo->siguiente = nuevo;
-            cabeza->anterior = nuevo;
+            cabeza->setSiguiente(cabeza);
+            cabeza->setAnterior(cabeza);
         }
-        tamanio++;
+        else
+        {
+            Nodo<int>* cola = cabeza->getAnterior();
+
+            nuevo->setSiguiente(cabeza);
+            nuevo->setAnterior(cola);
+
+            cola->setSiguiente(nuevo);
+            cabeza->setAnterior(nuevo);
+        }
     }
 
-   
-    void insertarAlInicio(T valor) {
-        Nodo<T>* nuevo = new Nodo<T>(valor);
-
-        if (estaVacia()) {
-            nuevo->siguiente = nuevo;
-            nuevo->anterior = nuevo;
-        } else {
-            Nodo<T>* ultimo = cabeza->anterior;
-
-            nuevo->siguiente = cabeza;
-            nuevo->anterior = ultimo;
-            ultimo->siguiente = nuevo;
-            cabeza->anterior = nuevo;
+    void imprimir()
+    {
+        if (cabeza == nullptr)
+        {
+            cout << "Lista vacia." << endl;
+            return;
         }
-        cabeza = nuevo;   // el nuevo nodo pasa a ser la cabeza
-        tamanio++;
+
+        Nodo<int>* actual = cabeza;
+
+        do
+        {
+            cout << actual->getDato() << " ";
+            actual = actual->getSiguiente();
+
+        } while (actual != cabeza);
+
+        cout << endl;
     }
-
-   
-
-   
-    
 };
 
+int main()
+{
+    ListaDobleCircular lista;
 
-int main() {
-    ListaDobleCircular<int> lista;
+    lista.insertar(10);
+    lista.insertar(20);
+    lista.insertar(30);
 
-    lista.insertarAlFinal(10);
-    lista.insertarAlFinal(20);
-    lista.insertarAlFinal(30);
-    lista.insertarAlInicio(5);
-    
+    cout << "Lista despues de insertar:" << endl;
 
-   
-    cout << "Tamano: " << lista.getTamanio() << endl;
+    lista.imprimir();
 
     return 0;
 }
-
-
-

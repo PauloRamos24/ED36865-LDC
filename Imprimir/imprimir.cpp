@@ -1,63 +1,125 @@
-
 #include <iostream>
 using namespace std;
 
-class Nodo {
-public:
-    int dato;
-    Nodo* siguiente;
-    Nodo* anterior;
+template <typename T>
+class Nodo
+{
+private:
+    T dato;
+    Nodo<T>* siguiente;
+    Nodo<T>* anterior;
 
-    Nodo(int dato) {
+public:
+    Nodo(T dato)
+    {
         this->dato = dato;
         siguiente = nullptr;
         anterior = nullptr;
     }
+
+    T getDato()
+    {
+        return dato;
+    }
+
+    void setDato(T dato)
+    {
+        this->dato = dato;
+    }
+
+    Nodo<T>* getSiguiente()
+    {
+        return siguiente;
+    }
+
+    void setSiguiente(Nodo<T>* siguiente)
+    {
+        this->siguiente = siguiente;
+    }
+
+    Nodo<T>* getAnterior()
+    {
+        return anterior;
+    }
+
+    void setAnterior(Nodo<T>* anterior)
+    {
+        this->anterior = anterior;
+    }
 };
 
-class ListaDobleCircular {
-public:
-    Nodo* cabeza;
+class ListaDobleCircular
+{
+private:
+    Nodo<int>* cabeza;
 
-    ListaDobleCircular() {
+public:
+
+    ListaDobleCircular()
+    {
         cabeza = nullptr;
     }
 
-    void imprimir() {
-        if (cabeza == nullptr) {
-            cout << "Lista vacia" << endl;
+    void insertar(int dato)
+    {
+        Nodo<int>* nuevo = new Nodo<int>(dato);
+
+        if (cabeza == nullptr)
+        {
+            cabeza = nuevo;
+            cabeza->setSiguiente(cabeza);
+            cabeza->setAnterior(cabeza);
+        }
+        else
+        {
+            Nodo<int>* cola = cabeza->getAnterior();
+
+            nuevo->setSiguiente(cabeza);
+            nuevo->setAnterior(cola);
+
+            cola->setSiguiente(nuevo);
+            cabeza->setAnterior(nuevo);
+        }
+    }
+
+    void imprimir()
+    {
+        if (cabeza == nullptr)
+        {
+            cout << "Lista vacia." << endl;
             return;
         }
 
-        Nodo* actual = cabeza;
+        Nodo<int>* actual = cabeza;
 
-        do {
-            cout << actual->dato << " ";
-            actual = actual->siguiente;
+        do
+        {
+            cout << "[" << actual->getDato() << "]";
+
+            actual = actual->getSiguiente();
+
+            if (actual != cabeza)
+            {
+                cout << " <-> ";
+            }
+
         } while (actual != cabeza);
 
-        cout << endl;
+        cout << " <-> vuelve al inicio" << endl;
     }
 };
 
-int main() {
+int main()
+{
     ListaDobleCircular lista;
 
-    Nodo* n1 = new Nodo(10);
-    Nodo* n2 = new Nodo(20);
-    Nodo* n3 = new Nodo(30);
+    lista.insertar(10);
+    lista.insertar(20);
+    lista.insertar(30);
+    lista.insertar(40);
 
-    lista.cabeza = n1;
+    cout << "Lista doble circular:" << endl;
 
-    n1->siguiente = n2;
-    n2->siguiente = n3;
-    n3->siguiente = n1;
-
-    n1->anterior = n3;
-    n2->anterior = n1;
-    n3->anterior = n2;
-
-    cout << "Lista: ";
     lista.imprimir();
 
     return 0;

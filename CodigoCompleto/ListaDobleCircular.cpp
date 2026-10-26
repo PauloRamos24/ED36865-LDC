@@ -17,23 +17,31 @@ using namespace std;
 // - valor
 // Return:     void
 ////////////////////////////////////////////////////////////////////////
-ListaDobleCircular::ListaDobleCircular() {
+ListaDobleCircular::ListaDobleCircular()
+{
     cabeza = nullptr;
 }
 
 void ListaDobleCircular::insertar(int valor)
 {
-   Nodo* nuevo = new Nodo(valor);
-    if (!cabeza) {
+    Nodo<int>* nuevo = new Nodo<int>(valor);
+
+    if (cabeza == nullptr)
+    {
         cabeza = nuevo;
-        cabeza->siguiente = cabeza;
-        cabeza->anterior = cabeza;
-    } else {
-        Nodo* cola = cabeza->anterior;
-        cola->siguiente = nuevo;
-        nuevo->anterior = cola;
-        nuevo->siguiente = cabeza;
-        cabeza->anterior = nuevo;
+
+        cabeza->setSiguiente(cabeza);
+        cabeza->setAnterior(cabeza);
+    }
+    else
+    {
+        Nodo<int>* cola = cabeza->getAnterior();
+
+        cola->setSiguiente(nuevo);
+        nuevo->setAnterior(cola);
+
+        nuevo->setSiguiente(cabeza);
+        cabeza->setAnterior(nuevo);
     }
 }
 
@@ -47,55 +55,54 @@ void ListaDobleCircular::insertar(int valor)
 
 void ListaDobleCircular::eliminar(int valor)
 {
-   if (!cabeza) {
-        cout << "La lista esta vacia. No hay elementos para eliminar.\n";
+    if (cabeza == nullptr)
+    {
+        cout << "La lista esta vacia." << endl;
         return;
     }
 
-    Nodo* actual = cabeza;
-    bool encontrado = false;
+    Nodo<int>* actual = cabeza;
 
-    // 1. Buscar el nodo que contiene el valor
-    do {
-        if (actual->dato == valor) {
-            encontrado = true;
+    do
+    {
+        if (actual->getDato() == valor)
+        {
             break;
         }
-        actual = actual->siguiente;
+
+        actual = actual->getSiguiente();
+
     } while (actual != cabeza);
 
-    if (!encontrado) {
-        cout << "El valor " << valor << " no se encuentra en la lista.\n";
+    if (actual->getDato() != valor)
+    {
+        cout << "El valor " << valor << " no se encuentra." << endl;
         return;
     }
 
-    // 2. CASO 1: La lista tiene un solo nodo y coincide
-    if (cabeza->siguiente == cabeza && cabeza->dato == valor) {
+    if (cabeza->getSiguiente() == cabeza)
+    {
         delete cabeza;
         cabeza = nullptr;
-        cout << "Elemento " << valor << " eliminado. La lista ahora esta vacia.\n";
+
+        cout << "Elemento eliminado." << endl;
         return;
     }
 
-    // 3. CASO 2: El nodo a eliminar es la cabeza actual
-    if (actual == cabeza) {
-        Nodo* cola = cabeza->anterior;
-        cabeza = cabeza->siguiente;
-        cola->siguiente = cabeza;
-        cabeza->anterior = cola;
-        delete actual;
-    }
-    // 4. CASO 3: El nodo está en el medio o es la cola
-    else {
-        Nodo* anteriorNodo = actual->anterior;
-        Nodo* siguienteNodo = actual->siguiente;
+    Nodo<int>* anterior = actual->getAnterior();
+    Nodo<int>* siguiente = actual->getSiguiente();
 
-        anteriorNodo->siguiente = siguienteNodo;
-        siguienteNodo->anterior = anteriorNodo;
-        delete actual;
+    anterior->setSiguiente(siguiente);
+    siguiente->setAnterior(anterior);
+
+    if (actual == cabeza)
+    {
+        cabeza = siguiente;
     }
 
-    cout << "Elemento " << valor << " eliminado correctamente.\n";
+    delete actual;
+
+    cout << "Elemento " << valor << " eliminado correctamente." << endl;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -108,21 +115,31 @@ void ListaDobleCircular::eliminar(int valor)
 
 void ListaDobleCircular::buscar(int valor)
 {
-   if (!cabeza) {
-        cout << "Lista vacia.\n";
+    if (cabeza == nullptr)
+    {
+        cout << "Lista vacia." << endl;
         return;
     }
-    Nodo* actual = cabeza;
-    int pos = 0;
-    do {
-        if (actual->dato == valor) {
-            cout << "Elemento " << valor << " encontrado en la posicion " << pos << ".\n";
+
+    Nodo<int>* actual = cabeza;
+    int posicion = 0;
+
+    do
+    {
+        if (actual->getDato() == valor)
+        {
+            cout << "Elemento " << valor
+                 << " encontrado en la posicion "
+                 << posicion << "." << endl;
             return;
         }
-        actual = actual->siguiente;
-        pos++;
+
+        actual = actual->getSiguiente();
+        posicion++;
+
     } while (actual != cabeza);
-    cout << "Elemento " << valor << " no encontrado.\n";
+
+    cout << "Elemento " << valor << " no encontrado." << endl;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -131,17 +148,25 @@ void ListaDobleCircular::buscar(int valor)
 // Return:     void
 ////////////////////////////////////////////////////////////////////////
 
-void ListaDobleCircular::imprimir(void)
+void ListaDobleCircular::imprimir()
 {
-   if (!cabeza) {
+    if (cabeza == nullptr)
+    {
         cout << "Lista vacia." << endl;
         return;
     }
-    Nodo* actual = cabeza;
+
+    Nodo<int>* actual = cabeza;
+
     cout << "Lista: ";
-    do {
-        cout << "[" << actual->dato << "] <-> ";
-        actual = actual->siguiente;
+
+    do
+    {
+        cout << "[" << actual->getDato() << "] <-> ";
+
+        actual = actual->getSiguiente();
+
     } while (actual != cabeza);
+
     cout << "(vuelve al inicio)" << endl;
 }

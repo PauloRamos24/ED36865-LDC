@@ -1,106 +1,171 @@
-
 #include <iostream>
 using namespace std;
 
-class Nodo {
-public:
-    int dato;
-    Nodo* siguiente;
-    Nodo* anterior;
+template <typename T>
+class Nodo
+{
+private:
+    T dato;
+    Nodo<T>* siguiente;
+    Nodo<T>* anterior;
 
-    Nodo(int dato) {
+public:
+    Nodo(T dato)
+    {
         this->dato = dato;
         siguiente = nullptr;
         anterior = nullptr;
     }
+
+    T getDato()
+    {
+        return dato;
+    }
+
+    void setDato(T dato)
+    {
+        this->dato = dato;
+    }
+
+    Nodo<T>* getSiguiente()
+    {
+        return siguiente;
+    }
+
+    void setSiguiente(Nodo<T>* siguiente)
+    {
+        this->siguiente = siguiente;
+    }
+
+    Nodo<T>* getAnterior()
+    {
+        return anterior;
+    }
+
+    void setAnterior(Nodo<T>* anterior)
+    {
+        this->anterior = anterior;
+    }
 };
 
-class ListaDobleCircular {
-public:
-    Nodo* cabeza;
+class ListaDobleCircular
+{
+private:
+    Nodo<int>* cabeza;
 
-    ListaDobleCircular() {
+public:
+
+    ListaDobleCircular()
+    {
         cabeza = nullptr;
     }
 
-    void eliminar(int dato) {
-        if (cabeza == nullptr) {
-            cout << "La lista esta vacia" << endl;
+    void insertar(int dato)
+    {
+        Nodo<int>* nuevo = new Nodo<int>(dato);
+
+        if (cabeza == nullptr)
+        {
+            cabeza = nuevo;
+            cabeza->setSiguiente(cabeza);
+            cabeza->setAnterior(cabeza);
+        }
+        else
+        {
+            Nodo<int>* cola = cabeza->getAnterior();
+
+            nuevo->setSiguiente(cabeza);
+            nuevo->setAnterior(cola);
+
+            cola->setSiguiente(nuevo);
+            cabeza->setAnterior(nuevo);
+        }
+    }
+
+    void eliminar(int dato)
+    {
+        if (cabeza == nullptr)
+        {
+            cout << "Lista vacia." << endl;
             return;
         }
 
-        Nodo* actual = cabeza;
+        Nodo<int>* actual = cabeza;
 
-        do {
-            if (actual->dato == dato) {
-
-                // Caso 1: solo existe un nodo
-                if (actual->siguiente == actual) {
-                    cabeza = nullptr;
-                } else {
-                    // Enlazar el anterior con el siguiente
-                    actual->anterior->siguiente = actual->siguiente;
-                    actual->siguiente->anterior = actual->anterior;
-
-                    // Si se elimina la cabeza
-                    if (actual == cabeza) {
-                        cabeza = actual->siguiente;
-                    }
-                }
-
-                delete actual;
-                cout << "Elemento eliminado" << endl;
-                return;
+        do
+        {
+            if (actual->getDato() == dato)
+            {
+                break;
             }
 
-            actual = actual->siguiente;
+            actual = actual->getSiguiente();
 
         } while (actual != cabeza);
 
-        cout << "Elemento no encontrado" << endl;
-    }
-
-    void imprimir() {
-        if (cabeza == nullptr) {
-            cout << "La lista esta vacia" << endl;
+        if (actual->getDato() != dato)
+        {
+            cout << "Elemento no encontrado." << endl;
             return;
         }
 
-        Nodo* actual = cabeza;
+        if (actual->getSiguiente() == actual)
+        {
+            delete actual;
+            cabeza = nullptr;
+            return;
+        }
 
-        do {
-            cout << actual->dato << " ";
-            actual = actual->siguiente;
+        Nodo<int>* anterior = actual->getAnterior();
+        Nodo<int>* siguiente = actual->getSiguiente();
+
+        anterior->setSiguiente(siguiente);
+        siguiente->setAnterior(anterior);
+
+        if (actual == cabeza)
+        {
+            cabeza = siguiente;
+        }
+
+        delete actual;
+    }
+
+    void imprimir()
+    {
+        if (cabeza == nullptr)
+        {
+            cout << "Lista vacia." << endl;
+            return;
+        }
+
+        Nodo<int>* actual = cabeza;
+
+        do
+        {
+            cout << actual->getDato() << " ";
+            actual = actual->getSiguiente();
+
         } while (actual != cabeza);
 
         cout << endl;
     }
 };
 
-int main() {
+int main()
+{
     ListaDobleCircular lista;
 
-    Nodo* n1 = new Nodo(10);
-    Nodo* n2 = new Nodo(20);
-    Nodo* n3 = new Nodo(30);
+    lista.insertar(10);
+    lista.insertar(20);
+    lista.insertar(30);
 
-    lista.cabeza = n1;
-
-    n1->siguiente = n2;
-    n2->siguiente = n3;
-    n3->siguiente = n1;
-
-    n1->anterior = n3;
-    n2->anterior = n1;
-    n3->anterior = n2;
-
-    cout << "Lista original: ";
+    cout << "Lista inicial:" << endl;
     lista.imprimir();
 
-    int valor = 20;
-    lista.eliminar(valor);
+    cout << "Eliminando 20..." << endl;
+    lista.eliminar(20);
 
-    cout << "Lista despues de eliminar: ";
+    cout << "Lista despues de eliminar:" << endl;
     lista.imprimir();
 
     return 0;

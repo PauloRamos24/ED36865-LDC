@@ -8,24 +8,20 @@
 #if !defined(__ListasDoblesEliminar_ListaDobleCircular_h)
 #define __ListasDoblesEliminar_ListaDobleCircular_h
 
-class Nodo;
-
 #include "Nodo.h"
 
 class ListaDobleCircular
 {
 public:
-   ListaDobleCircular();
-   void insertar(int valor);
-   void eliminar(int valor);
-   void buscar(int valor);
-   void imprimir(void);
+    ListaDobleCircular();
 
-protected:
+    void insertar(int valor);
+    void eliminar(int valor);
+    void buscar(int valor);
+    void imprimir();
+
 private:
-   Nodo* cabeza;
-
-
+    Nodo<int>* cabeza;
 };
 
 #endif
