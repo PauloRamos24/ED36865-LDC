@@ -97,7 +97,7 @@ void ListaDobleCircular<T>::insertarAlInicio(T valor)
         ultimo->setSiguiente(nuevo);
         cabeza->setAnterior(nuevo);
     }
-    cabeza = nuevo;   // el nuevo nodo pasa a ser la cabeza
+    cabeza = nuevo;   
     tamanio++;
 }
 
@@ -145,11 +145,11 @@ void ListaDobleCircular<T>::eliminar(T dato)
             }
             else
             {
-                // Enlazar el anterior con el siguiente
+                
                 actual->getAnterior()->setSiguiente(actual->getSiguiente());
                 actual->getSiguiente()->setAnterior(actual->getAnterior());
 
-                // Si se elimina la cabeza
+                
                 if (actual == cabeza)
                 {
                     cabeza = actual->getSiguiente();
