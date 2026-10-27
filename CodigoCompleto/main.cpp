@@ -6,7 +6,7 @@ using namespace std;
 int main() {
     ListaDobleCircular<int> lista;
 
-    // Pruebas de insercion
+    
     lista.insertarAlFinal(20);
     lista.insertarAlFinal(30);
     lista.insertarAlFinal(40);
